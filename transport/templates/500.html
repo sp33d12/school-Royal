@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>خطأ في الخادم — 500</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1b2a4a;--gold:#f0b429;--red:#c0392b;--white:#fff}
+body{font-family:'Tajawal',sans-serif;background:var(--navy);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.bg-circles{position:fixed;inset:0;overflow:hidden;z-index:0}
+.bc{position:absolute;border-radius:50%;opacity:.05}
+.bc1{width:500px;height:500px;background:var(--red);top:-150px;right:-150px}
+.bc2{width:400px;height:400px;background:var(--gold);bottom:-100px;left:-100px}
+.wrap{position:relative;z-index:1;text-align:center;padding:2rem;max-width:560px;width:100%}
+.icon-wrap{font-size:5rem;margin-bottom:1rem;animation:shake 2s ease-in-out infinite}
+@keyframes shake{0%,100%{transform:rotate(0deg)}10%,30%,50%,70%,90%{transform:rotate(-3deg)}20%,40%,60%,80%{transform:rotate(3deg)}}
+.err-num{font-size:7rem;font-weight:900;color:#ef4444;line-height:1;text-shadow:0 4px 20px rgba(239,68,68,.3)}
+.err-title{font-size:1.6rem;font-weight:800;color:var(--white);margin:.4rem 0 .6rem}
+.err-sub{color:rgba(255,255,255,.55);font-size:1rem;margin-bottom:2rem;line-height:1.7}
+.contact-box{background:rgba(240,180,41,.12);border:1px solid rgba(240,180,41,.3);border-radius:16px;padding:1.25rem 1.75rem;margin-bottom:2rem;width:100%}
+.cb-label{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.5rem}
+.cb-name{font-size:1.1rem;font-weight:800;color:var(--gold);margin-bottom:.3rem}
+.cb-phone{font-size:1.4rem;font-weight:900;color:var(--white);direction:ltr;unicode-bidi:embed;letter-spacing:.04em}
+.cb-hint{font-size:.78rem;color:rgba(255,255,255,.4);margin-top:.3rem}
+.err-code{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:.5rem 1rem;font-size:.78rem;color:#fca5a5;margin-bottom:1.5rem;display:inline-block}
+.btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.btn{padding:.7rem 1.5rem;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:700;text-decoration:none;border:none;cursor:pointer;transition:opacity .15s}
+.btn-gold{background:var(--gold);color:var(--navy)}.btn-gold:hover{opacity:.9}
+.btn-outline{background:transparent;border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8)}
+.btn-outline:hover{background:rgba(255,255,255,.08)}
+</style>
+</head>
+<body>
+<div class="bg-circles"><div class="bc bc1"></div><div class="bc bc2"></div></div>
+<div class="wrap">
+  <div class="icon-wrap">⚙️</div>
+  <div class="err-num">500</div>
+  <div class="err-title">خطأ في الخادم</div>
+  <div class="err-sub">حدث خطأ غير متوقع في النظام. يرجى المحاولة مجدداً أو التواصل مع المهندس المسؤول</div>
+  <div class="err-code">Internal Server Error — يرجى الإبلاغ عن هذا الخطأ</div>
+
+  <div class="contact-box">
+    <div class="cb-label">🛠 الدعم الفني — تواصل فوراً مع</div>
+    <div class="cb-name">المهندس محمد عباس</div>
+    <div class="cb-phone">07716912103</div>
+    <div class="cb-hint">أخبره بالصفحة التي كنت تستخدمها والإجراء الذي قمت به</div>
+  </div>
+
+  <div class="btns">
+    <a href="/" class="btn btn-gold">🏠 الصفحة الرئيسية</a>
+    <a href="javascript:location.reload()" class="btn btn-outline">↻ إعادة المحاولة</a>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+# Render Blueprint — auto-deploys the full stack (web + database)
+# Upload this file to your GitHub repo and use "Deploy to Render" — everything is configured.
+
+databases:
+  - name: school-transport-db
+    databaseName: school_transport
+    user: school_transport
+    plan: free  # change to 'starter' ($7/mo) for production — free DB expires after 90 days
+
+services:
+  - type: web
+    name: school-transport
+    runtime: python
+    plan: free  # change to 'starter' ($7/mo) for always-on, no cold starts
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn school_transport.wsgi:application"
+    healthCheckPath: /login/
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: "https://*.onrender.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: school-transport-db
+          property: connectionString
+      - key: WEB_CONCURRENCY
+        value: "4"

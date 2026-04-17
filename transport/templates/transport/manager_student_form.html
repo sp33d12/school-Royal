@@ -1,0 +1,119 @@
+{% extends "transport/base_manager.html" %}
+{% block title %}{% if student %}تعديل تلميذ{% else %}إضافة تلميذ{% endif %}{% endblock %}
+{% block page_title %}{% if student %}تعديل: {{ student.name }}{% else %}إضافة تلميذ جديد{% endif %}{% endblock %}
+{% block active_students %}active{% endblock %}
+
+{% block extra_style %}
+<style>
+.contacts-section{background:#f8fafc;border-radius:12px;padding:1.25rem;border:1px solid #e2e8f0;margin-top:.5rem}
+.contacts-section h3{font-size:.9rem;font-weight:700;color:#1b2a4a;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid #e2e8f0}
+.contact-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;padding-bottom:.75rem;border-bottom:1px dashed #e2e8f0}
+.contact-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.contact-num{font-size:.78rem;font-weight:700;color:#fff;background:#1b2a4a;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:.4rem}
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width:750px">
+  <a href="{% url 'manager_students' %}" class="btn btn-gray btn-sm" style="margin-bottom:1rem">← رجوع</a>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="card" style="margin-bottom:1rem">
+      <div class="card-head"><span class="card-title">البيانات الأساسية</span></div>
+      <div class="card-body">
+        {% if form.errors %}
+        <div class="msg error" style="margin-bottom:1rem">⚠ يرجى تصحيح الأخطاء أدناه</div>
+        {% endif %}
+        <div class="form-grid">
+          <div class="field-group">
+            <label>اسم التلميذ *</label>
+            {{ form.name }}
+            {% if form.name.errors %}<div style="color:#c0392b;font-size:.8rem;margin-top:.25rem">{{ form.name.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="field-group">
+            <label>المرحلة الدراسية *</label>
+            {{ form.grade }}
+          </div>
+          <div class="field-group">
+            <label>منطقة السكن</label>
+            {{ form.area }}
+          </div>
+          <div class="field-group">
+            <label>📍 نقطة دالة (أقرب معلم)</label>
+            {{ form.landmark }}
+          </div>
+          <div class="field-group">
+            <label>هاتف 1</label>
+            {{ form.phone1 }}
+          </div>
+          <div class="field-group">
+            <label>هاتف 2</label>
+            {{ form.phone2 }}
+          </div>
+          <div class="field-group" style="grid-column:1/-1">
+            <label>📝 ملاحظات</label>
+            {{ form.notes }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:1rem">
+      <div class="card-head"><span class="card-title">السائق ومسؤولة الخط</span></div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="field-group">
+            <label>السائق</label>
+            {{ form.driver }}
+          </div>
+          <div class="field-group">
+            <label>مسؤولة الخط</label>
+            {{ form.supervisor }}
+          </div>
+        </div>
+        <div style="margin-top:.5rem;font-size:.8rem;color:#64748b">
+          لإضافة سائق أو مسؤولة جديدة: <a href="{% url 'manager_drivers' %}" target="_blank" style="color:#1b2a4a;font-weight:600">إدارة السائقين</a> | <a href="{% url 'manager_supervisors' %}" target="_blank" style="color:#1b2a4a;font-weight:600">إدارة المسؤولات</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-head"><span class="card-title">المخوّلون (حتى 6)</span></div>
+      <div class="card-body">
+        <div class="contacts-section">
+          <h3>أسماء وهواتف المخوّلين بالاستلام</h3>
+          {% for i in "123456" %}
+          {% with idx=forloop.counter %}
+          <div class="contact-row">
+            <div>
+              <div class="contact-num">{{ idx }}</div>
+              <div class="field-group" style="margin:0">
+                <label>الاسم</label>
+                <input type="text" name="cn{{ idx }}" class="field-input"
+                  value="{% if contacts|length >= idx %}{% with c=contacts|slice:idx %}{% if c.0 %}{{ c.0.name }}{% endif %}{% endwith %}{% endif %}"
+                  placeholder="اسم المخوّل {{ idx }}">
+              </div>
+            </div>
+            <div style="margin-top:22px">
+              <div class="field-group" style="margin:0">
+                <label>رقم الهاتف</label>
+                <input type="text" name="cp{{ idx }}" class="field-input"
+                  value="{% if contacts|length >= idx %}{% with c=contacts|slice:idx %}{% if c.0 %}{{ c.0.phone }}{% endif %}{% endwith %}{% endif %}"
+                  placeholder="رقم هاتف المخوّل {{ idx }}">
+              </div>
+            </div>
+          </div>
+          {% endwith %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:.75rem">
+      <button type="submit" class="btn btn-primary">💾 حفظ</button>
+      <a href="{% url 'manager_students' %}" class="btn btn-gray">إلغاء</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

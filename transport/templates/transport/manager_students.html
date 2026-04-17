@@ -1,0 +1,54 @@
+{% extends "transport/base_manager.html" %}
+{% block title %}التلاميذ{% endblock %}
+{% block page_title %}إدارة التلاميذ{% endblock %}
+{% block active_students %}active{% endblock %}
+
+{% block content %}
+<div class="page-hdr">
+  <div class="page-hdr-left">
+    <h1>التلاميذ</h1>
+    <p>الإجمالي: <strong>{{ total }}</strong> تلميذ</p>
+  </div>
+  <a href="{% url 'manager_student_add' %}" class="btn btn-primary">➕ إضافة تلميذ</a>
+</div>
+
+<form method="get" class="search-row">
+  <input type="search" name="q" value="{{ q }}" class="search-input" placeholder="البحث بالاسم أو المرحلة أو المنطقة…">
+  <button type="submit" class="btn btn-primary">🔍 بحث</button>
+  {% if q %}<a href="{% url 'manager_students' %}" class="btn btn-gray">✕ مسح</a>{% endif %}
+</form>
+
+<div class="card">
+  <div class="tbl-wrap" style="border:none;border-radius:14px">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>اسم التلميذ</th><th>المرحلة</th><th>منطقة السكن</th>
+          <th>هاتف 1</th><th>السائق</th><th>المسؤولة</th><th>إجراءات</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+        <tr>
+          <td><span class="badge badge-gray">{{ forloop.counter }}</span></td>
+          <td style="font-weight:700;color:#1b2a4a">{{ s.name }}</td>
+          <td><span class="badge badge-blue">{{ s.grade }}</span></td>
+          <td>{{ s.area|default:"—" }}</td>
+          <td style="direction:ltr;unicode-bidi:embed">{{ s.phone1|default:"—" }}</td>
+          <td>{{ s.driver.name|default:"—" }}</td>
+          <td>{{ s.supervisor.name|default:"—" }}</td>
+          <td>
+            <div style="display:flex;gap:.4rem">
+              <a href="{% url 'manager_student_edit' s.pk %}" class="btn btn-gray btn-sm">✏ تعديل</a>
+              <a href="{% url 'manager_student_delete' s.pk %}" class="btn btn-red btn-sm">🗑</a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" style="text-align:center;padding:3rem;color:#94a3b8">لا يوجد تلاميذ</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "transport/base_manager.html" %}
+{% block title %}لوحة التحكم{% endblock %}
+{% block page_title %}لوحة التحكم{% endblock %}
+{% block active_dash %}active{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#e0f2fe">👦</div>
+    <div><div class="stat-num">{{ total_students }}</div><div class="stat-label">إجمالي التلاميذ</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#fef3c7">🚌</div>
+    <div><div class="stat-num">{{ total_drivers }}</div><div class="stat-label">السائقون</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#fce7f3">👩</div>
+    <div><div class="stat-num">{{ total_supervisors }}</div><div class="stat-label">مسؤولات الخطوط</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#dcfce7">👤</div>
+    <div><div class="stat-num">{{ total_employees }}</div><div class="stat-label">الموظفون</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <span class="card-title">آخر التلاميذ المضافين</span>
+    <a href="{% url 'manager_students' %}" class="btn btn-gray btn-sm">عرض الكل</a>
+  </div>
+    <div class="tbl-wrap" style="border:none;border-radius:0;overflow-x:auto">
+      <table style="min-width:1100px">
+        <thead>
+          <tr>
+            <th>الاسم</th>
+            <th>المرحلة</th>
+            <th>منطقة السكن</th>
+            <th>📍 نقطة دالة</th>
+            <th>هاتف 1</th>
+            <th>هاتف 2</th>
+            <th>السائق</th>
+            <th>هاتف السائق</th>
+            <th>الخط</th>
+            <th>المسؤولة</th>
+            <th>المخوّلون</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in recent_students %}
+          <tr>
+            <td style="font-weight:700;color:#1b2a4a;white-space:nowrap">
+              {% if s.photo %}<img src="{{ s.photo.url }}" style="width:26px;height:26px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-left:.4rem;border:1.5px solid #e2e8f0">{% endif %}
+              {{ s.name }}
+            </td>
+            <td><span class="badge badge-blue" style="white-space:nowrap">{{ s.grade }}</span></td>
+            <td style="white-space:nowrap">{{ s.area|default:"—" }}</td>
+            <td style="white-space:nowrap;font-size:.82rem;color:#64748b">{% if s.landmark %}📍 {{ s.landmark }}{% else %}—{% endif %}</td>
+            <td style="direction:ltr;unicode-bidi:embed;font-weight:600;color:#1a5fa8;white-space:nowrap">{{ s.phone1|default:"—" }}</td>
+            <td style="direction:ltr;unicode-bidi:embed;font-weight:600;color:#1a5fa8;white-space:nowrap">{{ s.phone2|default:"—" }}</td>
+            <td style="white-space:nowrap">{{ s.driver.name|default:"—" }}</td>
+            <td style="direction:ltr;unicode-bidi:embed;color:#1a5fa8;white-space:nowrap">{{ s.driver.phone|default:"—" }}</td>
+            <td>{% if s.driver.line_number %}<span class="badge badge-gold" style="white-space:nowrap">خط {{ s.driver.line_number }}</span>{% else %}—{% endif %}</td>
+            <td style="white-space:nowrap">{{ s.supervisor.name|default:"—" }}</td>
+            <td style="white-space:nowrap;font-size:.8rem">
+              {% for c in s.contacts.all %}{{ c.name }}{% if not forloop.last %} • {% endif %}{% empty %}—{% endfor %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="11" style="text-align:center;color:#94a3b8;padding:2rem">لا يوجد تلاميذ بعد</td></tr>
+          {% endfor %}
+        </tbody>
+    </div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-top:1rem">
+  <div class="card">
+    <div class="card-head"><span class="card-title">إجراءات سريعة</span></div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:.6rem">
+      <a href="{% url 'manager_student_add' %}" class="btn btn-primary" style="justify-content:center">➕ إضافة تلميذ</a>
+      <a href="{% url 'manager_drivers' %}" class="btn btn-gold" style="justify-content:center">🚌 إدارة السائقين</a>
+      <a href="{% url 'manager_supervisors' %}" class="btn btn-gray" style="justify-content:center">👩 إدارة المسؤولات</a>
+      <a href="{% url 'manager_import' %}" class="btn btn-green" style="justify-content:center">📥 استيراد Excel</a>
+      <a href="{% url 'employee_search' %}" class="btn btn-gray" style="justify-content:center">🔍 صفحة البحث</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="card-title">الوصول السريع</span></div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:.6rem">
+      <a href="{% url 'manager_employees' %}" class="btn btn-gray" style="justify-content:center">👤 إدارة الموظفين</a>
+      <a href="/admin/" class="btn btn-gray" style="justify-content:center">⚙ لوحة الإدارة</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}لوحة المدير{% endblock %} — النقل المدرسي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1b2a4a;--navy2:#243660;--navy3:#0f1d35;--gold:#f0b429;--red:#c0392b;--green:#27ae60;--blue:#2980b9;--text:#1e293b;--border:#e2e8f0;--light:#f4f6fb;--white:#fff;--sidebar-w:240px}
+body{font-family:'Tajawal',sans-serif;background:var(--light);color:var(--text);display:flex;min-height:100vh}
+/* ── Sidebar ── */
+.sidebar{width:var(--sidebar-w);background:var(--navy3);flex-shrink:0;display:flex;flex-direction:column;position:fixed;top:0;right:0;bottom:0;z-index:50;overflow-y:auto}
+.sb-logo{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:.75rem}
+.sb-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--gold),#e67e22);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.sb-title{font-size:1rem;font-weight:800;color:var(--white);line-height:1.2}
+.sb-role{font-size:.72rem;color:var(--gold);font-weight:600;letter-spacing:.05em}
+.sb-section{padding:.5rem 1rem .25rem;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:.5rem}
+.sb-link{display:flex;align-items:center;gap:.7rem;padding:.65rem 1.25rem;color:rgba(255,255,255,.65);text-decoration:none;font-size:.9rem;font-weight:500;border-right:3px solid transparent;transition:all .15s;margin:.1rem 0}
+.sb-link:hover{background:rgba(255,255,255,.06);color:var(--white)}
+.sb-link.active{background:rgba(240,180,41,.1);color:var(--gold);border-right-color:var(--gold)}
+.sb-link .ico{font-size:1rem;width:20px;text-align:center;flex-shrink:0}
+.sb-bottom{margin-top:auto;padding:1rem;border-top:1px solid rgba(255,255,255,.08)}
+.btn-logout{display:flex;align-items:center;gap:.6rem;width:100%;padding:.6rem 1rem;background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.3);border-radius:8px;color:#ff9f9f;font-family:'Tajawal',sans-serif;font-size:.875rem;font-weight:600;cursor:pointer;text-decoration:none;transition:background .15s}
+.btn-logout:hover{background:rgba(192,57,43,.3)}
+/* ── Main content ── */
+.main{margin-right:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.topbar-title{font-size:1.1rem;font-weight:700;color:var(--navy)}
+.topbar-user{font-size:.85rem;color:#64748b;display:flex;align-items:center;gap:.5rem}
+.avatar-sm{width:30px;height:30px;background:var(--navy);color:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem}
+.content{padding:1.5rem;flex:1}
+/* ── Messages ── */
+.msgs{margin-bottom:1rem}
+.msg{padding:.7rem 1rem;border-radius:8px;font-size:.875rem;margin-bottom:.4rem;display:flex;align-items:center;gap:.5rem}
+.msg.success{background:#dcfce7;color:#166534;border:1px solid #86efac}
+.msg.error{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+.msg.warning{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+/* ── Cards ── */
+.card{background:var(--white);border-radius:14px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.card-head{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:1rem;font-weight:700;color:var(--navy)}
+.card-body{padding:1.25rem}
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.1rem;border:none;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:.875rem;font-weight:600;cursor:pointer;text-decoration:none;transition:opacity .15s,transform .1s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--navy);color:var(--white)}
+.btn-primary:hover{background:var(--navy2)}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{opacity:.9}
+.btn-green{background:var(--green);color:var(--white)}
+.btn-green:hover{opacity:.9}
+.btn-red{background:var(--red);color:var(--white)}
+.btn-red:hover{opacity:.9}
+.btn-gray{background:#f1f5f9;color:#475569;border:1px solid var(--border)}
+.btn-gray:hover{background:var(--border)}
+.btn-sm{padding:.35rem .75rem;font-size:.8rem}
+/* ── Table ── */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--navy);color:rgba(255,255,255,.85);font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:.75rem 1rem;text-align:right;white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#f8fafc}
+td{padding:.75rem 1rem;font-size:.875rem;color:#334155;vertical-align:middle}
+/* ── Form ── */
+.field-group{margin-bottom:1.1rem}
+.field-group label{display:block;font-size:.78rem;font-weight:700;letter-spacing:.05em;color:#64748b;margin-bottom:.35rem}
+.field-input{width:100%;padding:.65rem 1rem;border:1.5px solid var(--border);border-radius:9px;font-family:'Tajawal',sans-serif;font-size:.95rem;color:var(--text);background:var(--white);transition:border-color .15s,box-shadow .15s}
+.field-input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(27,42,74,.1)}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+/* ── Badge ── */
+.badge{display:inline-block;padding:.2rem .65rem;border-radius:20px;font-size:.75rem;font-weight:700}
+.badge-blue{background:#dbeafe;color:#1e40af}
+.badge-green{background:#dcfce7;color:#166534}
+.badge-gold{background:#fef3c7;color:#92400e}
+.badge-gray{background:#f1f5f9;color:#475569}
+/* ── Page header ── */
+.page-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem}
+.page-hdr-left h1{font-size:1.4rem;font-weight:800;color:var(--navy)}
+.page-hdr-left p{color:#64748b;font-size:.875rem;margin-top:.2rem}
+/* ── Search bar ── */
+.search-row{display:flex;gap:.6rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.search-input{flex:1;min-width:180px;padding:.6rem 1rem;border:1.5px solid var(--border);border-radius:9px;font-family:'Tajawal',sans-serif;font-size:.9rem;color:var(--text)}
+.search-input:focus{outline:none;border-color:var(--navy)}
+/* ── Stats ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stat-card{background:var(--white);border-radius:14px;padding:1.25rem;border:1px solid var(--border);display:flex;align-items:center;gap:1rem}
+.stat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.stat-num{font-size:1.8rem;font-weight:800;color:var(--navy);line-height:1}
+.stat-label{font-size:.8rem;color:#64748b;margin-top:.2rem}
+@media(max-width:768px){.sidebar{transform:translateX(100%)}.main{margin-right:0}}
+</style>
+{% block extra_style %}{% endblock %}
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-icon">🚌</div>
+    <div>
+      <div class="sb-title">النقل المدرسي</div>
+      <div class="sb-role">لوحة المدير</div>
+    </div>
+  </div>
+
+  <div class="sb-section">الرئيسية</div>
+  <a href="{% url 'manager_dashboard' %}" class="sb-link {% block active_dash %}{% endblock %}">
+    <span class="ico">📊</span> لوحة التحكم
+  </a>
+  <a href="{% url 'employee_search' %}" class="sb-link {% block active_search %}{% endblock %}">
+    <span class="ico">🔍</span> البحث عن تلميذ
+  </a>
+
+  <div class="sb-section">البيانات</div>
+  <a href="{% url 'manager_students' %}" class="sb-link {% block active_students %}{% endblock %}">
+    <span class="ico">👦</span> التلاميذ
+  </a>
+  <a href="{% url 'manager_drivers' %}" class="sb-link {% block active_drivers %}{% endblock %}">
+    <span class="ico">🚌</span> السائقون
+  </a>
+  <a href="{% url 'manager_supervisors' %}" class="sb-link {% block active_supervisors %}{% endblock %}">
+    <span class="ico">👩</span> مسؤولات الخطوط
+  </a>
+
+  <div class="sb-section">الإدارة</div>
+  <a href="{% url 'manager_employees' %}" class="sb-link {% block active_employees %}{% endblock %}">
+    <span class="ico">👤</span> الموظفون
+  </a>
+  <a href="{% url 'manager_import' %}" class="sb-link {% block active_import %}{% endblock %}">
+    <span class="ico">📥</span> استيراد Excel
+  </a>
+
+  <div class="sb-bottom">
+    <a href="{% url 'logout' %}" class="btn-logout">
+      <span>🚪</span> تسجيل الخروج ({{ request.user.username }})
+    </a>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">{% block page_title %}{% endblock %}</div>
+    <div class="topbar-user">
+      <div class="avatar-sm">{{ request.user.username|first|upper }}</div>
+      {{ request.user.username }}
+      <span class="badge badge-gold" style="font-size:.7rem">مدير</span>
+    </div>
+  </div>
+
+  <div class="content">
+    {% if messages %}
+    <div class="msgs">
+      {% for m in messages %}
+      <div class="msg {{ m.tags }}">{{ m }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+</body>
+</html>

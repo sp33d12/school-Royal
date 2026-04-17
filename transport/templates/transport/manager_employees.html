@@ -1,0 +1,59 @@
+{% extends "transport/base_manager.html" %}
+{% block title %}الموظفون{% endblock %}
+{% block page_title %}إدارة الموظفين{% endblock %}
+{% block active_employees %}active{% endblock %}
+
+{% block content %}
+<div style="display:grid;grid-template-columns:1fr 320px;gap:1.25rem;align-items:start">
+  <div class="card">
+    <div class="card-head"><span class="card-title">قائمة الموظفين ({{ employees.count }})</span></div>
+    <div class="tbl-wrap" style="border:none;border-radius:14px">
+      <table>
+        <thead><tr><th>#</th><th>اسم المستخدم</th><th>الصلاحية</th><th>الحالة</th><th>حذف</th></tr></thead>
+        <tbody>
+          {% for emp in employees %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td style="font-weight:600">{{ emp.username }}</td>
+            <td><span class="badge badge-blue">موظف — بحث فقط</span></td>
+            <td>
+              {% if emp.is_active %}<span class="badge badge-green">نشط</span>
+              {% else %}<span class="badge badge-gray">معطّل</span>{% endif %}
+            </td>
+            <td>
+              <form method="post" action="{% url 'manager_employee_delete' emp.pk %}" onsubmit="return confirm('حذف {{ emp.username }}؟')">
+                {% csrf_token %}<button type="submit" class="btn btn-red btn-sm">🗑</button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" style="text-align:center;padding:2rem;color:#94a3b8">لا يوجد موظفون</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="card-title">إضافة موظف جديد</span></div>
+    <div class="card-body">
+      {% if form.errors %}
+      <div class="msg error" style="margin-bottom:.75rem">
+        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+        {% for field in form %}{% for error in field.errors %}{{ error }}{% endfor %}{% endfor %}
+      </div>
+      {% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <div class="field-group"><label>اسم المستخدم *</label>{{ form.username }}</div>
+        <div class="field-group"><label>كلمة المرور *</label>{{ form.password }}</div>
+        <div class="field-group"><label>تأكيد كلمة المرور *</label>{{ form.password2 }}</div>
+        <button type="submit" class="btn btn-primary" style="width:100%">➕ إنشاء حساب</button>
+      </form>
+      <div style="margin-top:1rem;padding:.75rem;background:#f8fafc;border-radius:8px;font-size:.8rem;color:#64748b">
+        💡 الموظف يمكنه البحث عن التلاميذ وعرض بياناتهم فقط. لا يمكنه الإضافة أو التعديل أو الحذف.
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

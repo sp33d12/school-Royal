@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>الصفحة غير موجودة — 404</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1b2a4a;--gold:#f0b429;--red:#c0392b;--white:#fff;--light:#f4f6fb}
+body{font-family:'Tajawal',sans-serif;background:var(--navy);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.bg-circles{position:fixed;inset:0;overflow:hidden;z-index:0}
+.bc{position:absolute;border-radius:50%;opacity:.05}
+.bc1{width:600px;height:600px;background:var(--gold);top:-200px;right:-200px}
+.bc2{width:400px;height:400px;background:#3498db;bottom:-150px;left:-100px}
+.bc3{width:300px;height:300px;background:var(--gold);bottom:50px;right:100px}
+.wrap{position:relative;z-index:1;text-align:center;padding:2rem;max-width:560px;width:100%}
+/* Bus illustration */
+.bus-wrap{margin-bottom:1.5rem;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.bus-svg{filter:drop-shadow(0 12px 24px rgba(0,0,0,.3))}
+/* Error number */
+.err-num{font-size:7rem;font-weight:900;color:var(--gold);line-height:1;letter-spacing:-.02em;text-shadow:0 4px 20px rgba(240,180,41,.3)}
+.err-title{font-size:1.6rem;font-weight:800;color:var(--white);margin:.4rem 0 .6rem}
+.err-sub{color:rgba(255,255,255,.55);font-size:1rem;margin-bottom:2rem;line-height:1.7}
+/* Contact box */
+.contact-box{background:rgba(240,180,41,.12);border:1px solid rgba(240,180,41,.3);border-radius:16px;padding:1.25rem 1.75rem;margin-bottom:2rem;display:inline-block;width:100%}
+.cb-label{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.5rem}
+.cb-name{font-size:1.1rem;font-weight:800;color:var(--gold);margin-bottom:.3rem}
+.cb-phone{font-size:1.4rem;font-weight:900;color:var(--white);direction:ltr;unicode-bidi:embed;letter-spacing:.04em}
+.cb-hint{font-size:.78rem;color:rgba(255,255,255,.4);margin-top:.3rem}
+/* Buttons */
+.btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.btn{padding:.7rem 1.5rem;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:700;text-decoration:none;border:none;cursor:pointer;transition:opacity .15s,transform .1s}
+.btn:active{transform:scale(.97)}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{opacity:.9}
+.btn-outline{background:transparent;border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8)}
+.btn-outline:hover{background:rgba(255,255,255,.08)}
+</style>
+</head>
+<body>
+<div class="bg-circles">
+  <div class="bc bc1"></div><div class="bc bc2"></div><div class="bc bc3"></div>
+</div>
+<div class="wrap">
+  <div class="bus-wrap">
+    <svg class="bus-svg" width="160" height="90" viewBox="0 0 160 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="8" y="18" width="132" height="54" rx="10" fill="#f0b429"/>
+      <rect x="18" y="26" width="26" height="20" rx="4" fill="#1b2a4a" opacity=".9"/>
+      <rect x="52" y="26" width="26" height="20" rx="4" fill="#1b2a4a" opacity=".9"/>
+      <rect x="86" y="26" width="26" height="20" rx="4" fill="#1b2a4a" opacity=".9"/>
+      <rect x="118" y="26" width="16" height="20" rx="4" fill="#1b2a4a" opacity=".9"/>
+      <rect x="8" y="56" width="132" height="6" rx="2" fill="#d4920f"/>
+      <rect x="0" y="24" width="12" height="28" rx="5" fill="#e8a820"/>
+      <rect x="148" y="24" width="12" height="28" rx="5" fill="#e8a820"/>
+      <circle cx="32" cy="76" r="10" fill="#1b2a4a"/>
+      <circle cx="32" cy="76" r="6" fill="#334155"/>
+      <circle cx="32" cy="76" r="3" fill="#f0b429"/>
+      <circle cx="108" cy="76" r="10" fill="#1b2a4a"/>
+      <circle cx="108" cy="76" r="6" fill="#334155"/>
+      <circle cx="108" cy="76" r="3" fill="#f0b429"/>
+      <text x="80" y="48" font-family="Tajawal,sans-serif" font-size="11" font-weight="800" fill="#1b2a4a" text-anchor="middle">404</text>
+    </svg>
+  </div>
+
+  <div class="err-num">404</div>
+  <div class="err-title">الصفحة غير موجودة</div>
+  <div class="err-sub">عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها</div>
+
+  <div class="contact-box">
+    <div class="cb-label">⚙ للمساعدة التقنية تواصل مع</div>
+    <div class="cb-name">المهندس محمد عباس</div>
+    <div class="cb-phone">07716912103</div>
+    <div class="cb-hint">متاح للدعم الفني على مدار الساعة</div>
+  </div>
+
+  <div class="btns">
+    <a href="/" class="btn btn-gold">🏠 الصفحة الرئيسية</a>
+    <a href="javascript:history.back()" class="btn btn-outline">← رجوع</a>
+  </div>
+</div>
+</body>
+</html>

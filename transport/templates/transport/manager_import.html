@@ -1,0 +1,91 @@
+{% extends "transport/base_manager.html" %}
+{% block title %}استيراد Excel{% endblock %}
+{% block page_title %}استيراد بيانات من Excel{% endblock %}
+{% block active_import %}active{% endblock %}
+
+{% block content %}
+<div style="max-width:700px">
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-head"><span class="card-title">📥 رفع ملف Excel</span></div>
+    <div class="card-body">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div style="border:2px dashed #e2e8f0;border-radius:12px;padding:2rem;text-align:center;margin-bottom:1.25rem;transition:border-color .15s" id="drop-zone">
+          <div style="font-size:2.5rem;margin-bottom:.75rem">📊</div>
+          <div style="font-weight:700;color:#1b2a4a;margin-bottom:.3rem">اختر ملف Excel</div>
+          <div style="color:#64748b;font-size:.875rem;margin-bottom:1rem">الصيغ المدعومة: .xlsx, .xls</div>
+          <input type="file" name="excel_file" id="file-input" accept=".xlsx,.xls" style="display:none" required>
+          <label for="file-input" class="btn btn-primary" style="cursor:pointer">📁 اختيار ملف</label>
+          <div id="file-name" style="margin-top:.75rem;font-size:.85rem;color:#475569"></div>
+        </div>
+        <button type="submit" class="btn btn-green" style="width:100%;justify-content:center;padding:.8rem">
+          📥 استيراد البيانات
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-head">
+      <span class="card-title">📋 تنسيق الملف المطلوب</span>
+      <a href="{% url 'excel_template' %}" class="btn btn-gold btn-sm">⬇ تحميل القالب</a>
+    </div>
+    <div class="card-body">
+      <div style="overflow-x:auto">
+        <table style="font-size:.8rem">
+          <thead>
+            <tr>
+              <th>A</th><th>B</th><th>C</th><th>D</th><th>E</th>
+              <th>F</th><th>G</th><th>H</th><th>I</th><th>J</th><th>K</th>
+              <th>L-M</th><th>N-O</th><th>P-Q</th><th>R-S</th><th>T-U</th><th>V-W</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#f8fafc">
+              <td>اسم التلميذ*</td>
+              <td>المرحلة*</td>
+              <td>منطقة السكن</td>
+              <td>هاتف 1</td>
+              <td>هاتف 2</td>
+              <td>اسم السائق</td>
+              <td>هاتف السائق</td>
+              <td>خط السائق</td>
+              <td>اسم المسؤولة</td>
+              <td>هاتف المسؤولة</td>
+              <td>خط المسؤولة</td>
+              <td>مخول1 (اسم+هاتف)</td>
+              <td>مخول2</td>
+              <td>مخول3</td>
+              <td>مخول4</td>
+              <td>مخول5</td>
+              <td>مخول6</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:1rem;padding:.75rem;background:#fef3c7;border-radius:8px;font-size:.82rem;color:#92400e">
+        ⚠ الأعمدة المميزة بـ * مطلوبة. الصف الأول يجب أن يكون عناوين الأعمدة. تبدأ البيانات من الصف الثاني.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="card-title">💡 تعليمات مهمة</span></div>
+    <div class="card-body" style="font-size:.875rem;color:#475569;line-height:2">
+      <p>✅ إذا كان اسم السائق أو المسؤولة موجود مسبقاً في النظام سيتم ربطه تلقائياً</p>
+      <p>✅ إذا لم يكن موجوداً سيتم إنشاؤه تلقائياً</p>
+      <p>✅ يمكن إضافة حتى 6 مخوّلين لكل تلميذ</p>
+      <p>⚠ لن يتم حذف البيانات الموجودة — سيتم إضافة التلاميذ الجدد فقط</p>
+      <p>⚠ تأكد من أن الملف محفوظ بصيغة .xlsx</p>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('file-input').addEventListener('change', function() {
+  const name = this.files[0] ? this.files[0].name : '';
+  document.getElementById('file-name').textContent = name ? '✓ ' + name : '';
+  document.getElementById('drop-zone').style.borderColor = name ? '#27ae60' : '#e2e8f0';
+});
+</script>
+{% endblock %}

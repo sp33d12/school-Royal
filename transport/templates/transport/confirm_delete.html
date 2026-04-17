@@ -1,0 +1,20 @@
+{% extends "transport/base_manager.html" %}
+{% block title %}تأكيد الحذف{% endblock %}
+{% block page_title %}تأكيد الحذف{% endblock %}
+
+{% block content %}
+<div style="max-width:480px;margin:2rem auto;text-align:center">
+  <div class="card">
+    <div class="card-body" style="padding:2rem">
+      <div style="font-size:3rem;margin-bottom:1rem">⚠️</div>
+      <h2 style="color:#1b2a4a;margin-bottom:.5rem">تأكيد الحذف</h2>
+      <p style="color:#64748b;margin-bottom:1.5rem">هل أنت متأكد من حذف {{ type }}: <strong>{{ obj }}</strong>؟<br>لا يمكن التراجع عن هذا الإجراء.</p>
+      <form method="post" style="display:flex;gap:.75rem;justify-content:center">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-red">نعم، احذف</button>
+        <a href="javascript:history.back()" class="btn btn-gray">إلغاء</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
