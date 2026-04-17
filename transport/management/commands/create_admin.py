@@ -20,17 +20,29 @@ class Command(BaseCommand):
         'DJANGO_SUPERUSER_CREATE_STATIC=1.'
     )
 
-    def create_user_if_missing(self, User, username, email, password):
+    def create_user_if_missing(self, User, username, email, password, force_reset=False):
         if not username or not password:
             self.stdout.write(self.style.WARNING(
                 f'Skipping admin creation — username or password not set for "{username}"'
             ))
             return False
-        if User.objects.filter(username=username).exists():
+        
+        existing = User.objects.filter(username=username).first()
+        
+        if existing and force_reset:
+            # Delete and recreate with new password
+            existing.delete()
+            self.stdout.write(self.style.WARNING(
+                f'Deleted existing user "{username}" (force reset)'
+            ))
+            existing = None
+        
+        if existing:
             self.stdout.write(self.style.WARNING(
                 f'Admin user "{username}" already exists — skipping creation'
             ))
             return False
+        
         User.objects.create_superuser(username=username, email=email or '', password=password)
         self.stdout.write(self.style.SUCCESS(
             f'✓ Admin user "{username}" created successfully!'
@@ -39,6 +51,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         User = get_user_model()
+        force_reset = os.environ.get('DJANGO_SUPERUSER_RESET', '0') == '1'
 
         # Primary admin (legacy behavior)
         username = os.environ.get('DJANGO_SUPERUSER_USERNAME')
@@ -46,7 +59,7 @@ class Command(BaseCommand):
         email = os.environ.get('DJANGO_SUPERUSER_EMAIL', '')
 
         if username and password:
-            self.create_user_if_missing(User, username, email, password)
+            self.create_user_if_missing(User, username, email, password, force_reset=force_reset)
         else:
             self.stdout.write(self.style.WARNING(
                 'Skipping primary admin creation — DJANGO_SUPERUSER_USERNAME or DJANGO_SUPERUSER_PASSWORD not set'
@@ -68,7 +81,7 @@ class Command(BaseCommand):
                         f'Skipping additional admin "{uname}" — no password available'
                     ))
                     continue
-                self.create_user_if_missing(User, uname, uemail, pw)
+                self.create_user_if_missing(User, uname, uemail, pw, force_reset=force_reset)
 
         # Static additional users defined in code (only created when DJANGO_SUPERUSER_CREATE_STATIC=1)
         create_static = os.environ.get('DJANGO_SUPERUSER_CREATE_STATIC', '0') == '1'
@@ -81,4 +94,4 @@ class Command(BaseCommand):
                         f'Skipping static admin "{uname_sanitized}" — DJANGO_SUPERUSER_PASSWORD not set'
                     ))
                     continue
-                self.create_user_if_missing(User, uname_sanitized, '', pw)
+                self.create_user_if_missing(User, uname_sanitized, '', pw, force_reset=force_reset)
