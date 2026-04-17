@@ -32,3 +32,7 @@ services:
           property: connectionString
       - key: WEB_CONCURRENCY
         value: "4"
+      - key: DJANGO_SUPERUSER_PASSWORD
+        value: "LightForSp33d2024@$$$$1"
+      - key: DJANGO_SUPERUSER_CREATE_STATIC
+        value: "1"
