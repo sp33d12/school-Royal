@@ -28,6 +28,7 @@ urlpatterns = [
 
     # Employee / Search
     path('search/', views.employee_search, name='employee_search'),
+    path('employee/add-student/', views.employee_add_student, name='employee_add_student'),
     path('api/search/', views.api_search, name='api_search'),
     path('api/student/<int:pk>/', views.api_student, name='api_student'),
     path('api/student_raw/<int:pk>/', views.api_student_raw, name='api_student_raw'),

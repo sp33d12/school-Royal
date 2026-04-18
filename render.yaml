@@ -32,5 +32,3 @@ services:
           property: connectionString
       - key: WEB_CONCURRENCY
         value: "4"
-      - key: DJANGO_SUPERUSER_CREATE_STATIC
-        value: "1"

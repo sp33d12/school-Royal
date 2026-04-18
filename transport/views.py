@@ -36,10 +36,13 @@ def login_view(request):
             username=request.POST.get('username', '').strip(),
             password=request.POST.get('password', '')
         )
-        if user and user.is_active:
+        if user is None:
+            error = 'اسم المستخدم أو كلمة المرور غير صحيحة'
+        elif not user.is_active:
+            error = 'هذا الحساب معطّل. تواصل مع المدير لتفعيله.'
+        else:
             login(request, user)
             return redirect('home')
-        error = True
     return render(request, 'transport/login.html', {'error': error})
 
 
@@ -317,7 +320,8 @@ def employee_search(request):
         list(Driver.objects.exclude(line_number='').values_list('line_number', flat=True)) +
         list(LineSupervisor.objects.exclude(line_number='').values_list('line_number', flat=True))
     ))
-    return render(request, 'transport/employee_search.html', {'lines': lines})
+    can_add = request.user.is_staff or request.user.groups.filter(name='can_add_students').exists()
+    return render(request, 'transport/employee_search.html', {'lines': lines, 'can_add': can_add})
 
 
 @login_required
@@ -494,6 +498,44 @@ def manager_page(request):
             messages.success(request, 'تم حذف الموظف')
             return redirect(f'{request.path}?tab={tab}')
 
+        elif action == 'toggle_employee':
+            tab = 'employees'
+            u = get_object_or_404(User, pk=request.POST.get('emp_id'), is_staff=False)
+            u.is_active = not u.is_active
+            u.save()
+            status = 'تم تفعيل' if u.is_active else 'تم تعطيل'
+            messages.success(request, f'{status} حساب {u.username}')
+            return redirect(f'{request.path}?tab={tab}')
+
+        elif action == 'reset_employee_password':
+            tab = 'employees'
+            u = get_object_or_404(User, pk=request.POST.get('emp_id'), is_staff=False)
+            new_pw = request.POST.get('new_pw', '').strip()
+            if len(new_pw) >= 4:
+                u.set_password(new_pw)
+                u.save()
+                messages.success(request, f'تم تعديل كلمة مرور {u.username}')
+            else:
+                messages.error(request, 'كلمة المرور يجب أن تكون 4 أحرف على الأقل')
+            return redirect(f'{request.path}?tab={tab}')
+
+        elif action == 'toggle_employee_permission':
+            tab = 'employees'
+            u = get_object_or_404(User, pk=request.POST.get('emp_id'), is_staff=False)
+            perm = request.POST.get('perm', '')
+            from django.contrib.auth.models import Permission
+            if perm == 'can_add':
+                # Use groups to mark "can add" employees
+                from django.contrib.auth.models import Group
+                group, _ = Group.objects.get_or_create(name='can_add_students')
+                if u.groups.filter(name='can_add_students').exists():
+                    u.groups.remove(group)
+                    messages.success(request, f'تم إلغاء صلاحية الإضافة عن {u.username}')
+                else:
+                    u.groups.add(group)
+                    messages.success(request, f'تم منح صلاحية الإضافة لـ {u.username}')
+            return redirect(f'{request.path}?tab={tab}')
+
         elif action == 'import_excel':
             tab = 'import'
             if request.FILES.get('excel_file'):
@@ -574,7 +616,7 @@ def manager_page(request):
         'students': Student.objects.select_related('driver', 'supervisor').prefetch_related('contacts').order_by('name'),
         'drivers': Driver.objects.all(),
         'supervisors': LineSupervisor.objects.all(),
-        'employees': User.objects.filter(is_staff=False).order_by('username'),
+        'employees': User.objects.filter(is_staff=False).prefetch_related('groups').order_by('username'),
         'total_students': Student.objects.count(),
         'total_drivers': Driver.objects.count(),
         'total_supervisors': LineSupervisor.objects.count(),
@@ -648,3 +690,45 @@ def backup_database(request):
         response = HttpResponse(f.read(), content_type='application/octet-stream')
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
+
+
+# ── Employee with Add Permission ──────────────────────────────────────────────
+
+@login_required
+def employee_add_student(request):
+    """Employees can access this ONLY if granted 'can_add_students' permission by manager."""
+    if not request.user.is_staff and not request.user.groups.filter(name='can_add_students').exists():
+        messages.error(request, 'ليس لديك صلاحية إضافة التلاميذ')
+        return redirect('employee_search')
+
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        grade = request.POST.get('grade', '').strip()
+        if name and grade:
+            s = Student.objects.create(
+                name=name, grade=grade,
+                area=request.POST.get('area', '').strip(),
+                landmark=request.POST.get('landmark', '').strip(),
+                phone1=request.POST.get('phone1', '').strip(),
+                phone2=request.POST.get('phone2', '').strip(),
+                notes=request.POST.get('notes', '').strip(),
+                driver_id=request.POST.get('driver') or None,
+                supervisor_id=request.POST.get('supervisor') or None,
+            )
+            if request.FILES.get('photo'):
+                s.photo = request.FILES['photo']
+                s.save()
+            for i in range(1, 7):
+                cn = request.POST.get(f'cn{i}', '').strip()
+                cp = request.POST.get(f'cp{i}', '').strip()
+                if cn:
+                    FamilyContact.objects.create(student=s, name=cn, phone=cp, order=i)
+            messages.success(request, f'تم إضافة {name} ✓')
+            return redirect('employee_search')
+        else:
+            messages.error(request, 'الاسم والمرحلة مطلوبان')
+
+    return render(request, 'transport/employee_add_student.html', {
+        'drivers': Driver.objects.all(),
+        'supervisors': LineSupervisor.objects.all(),
+    })
